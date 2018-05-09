@@ -12,6 +12,10 @@ class TimeSpan;
 #define PCF8523_CLKOUTCONTROL 0x0F
 #define PCF8523_CONTROL_3     0x02
 
+#define PCF85063_ADDRESS      0x51
+#define PCF85063_CONTROL_1    0x01
+#define PCF85063_CONTROL_2    0x02
+
 #define DS1307_ADDRESS  0x68
 #define DS1307_CONTROL  0x07
 #define DS1307_NVRAM    0x08
@@ -44,7 +48,7 @@ public:
     uint8_t dayOfTheWeek() const;
 
     // 32-bit times as seconds since 1/1/2000
-    long secondstime() const;   
+    long secondstime() const;
     // 32-bit times as seconds since 1/1/1970
     uint32_t unixtime(void) const;
 
@@ -118,6 +122,22 @@ public:
 
     Pcf8523SqwPinMode readSqwPinMode();
     void writeSqwPinMode(Pcf8523SqwPinMode mode);
+};
+
+// RTC based on the PCF85063 chip connected via I2C and the Wire library
+enum Pcf85063Capacitor { PCF85063_7pF = 0, PCF85063_12pt5pF = 1 }
+
+class RTC_PCF85063 {
+public:
+    boolean begin(void);
+    void adjust(const DateTime& dt);
+    boolean initialized(void);
+    static DateTime now();
+
+    Pcf8523SqwPinMode readSqwPinMode();
+    void writeSqwPinMode(Pcf8523SqwPinMode mode);
+
+    void selectCapacitor(Pcf85063Capacitor capacitor);
 };
 
 // RTC using the internal millis() clock, has to be initialized before use
